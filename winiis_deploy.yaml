@@ -1,0 +1,22 @@
+---
+- hosts: all
+  gather_facts: no
+  vars:
+    ansible_port: 5985
+    ansible_connection: winrm
+    ansible_winrm_server_cert_validation: ignore
+  tasks:
+  - name: Stop application pool
+    community.windows.win_iis_webapppool:
+      name: "{{ iis_webapppool }}"
+      state: stopped
+
+  - name: Copy file
+    win_copy:
+      src: "{{ src_dir }}/"
+      dest: "{{ dest_dir }}"
+
+  - name: Start application pool
+    community.windows.win_iis_webapppool:
+      name: "{{ iis_webapppool }}"
+      state: started
